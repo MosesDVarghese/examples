@@ -1,0 +1,66 @@
+Step 9: Using properties
+
+## notes
+
+compile
+
+```
+glib-compile-resources exampleapp.gresource.xml --target=resources.c --generate-source
+
+gcc -o app $(pkg-config --cflags --libs gtk4) main.c exampleapp.c exampleappwin.c exampleappprefs.c resources.c
+```
+
+## notes
+
+If you want to undo the step where you compile and install the GSettings schema globally, you would need to remove the schema file (`org.gtk.exampleapp.gschema.xml`) that you placed in `/usr/share/glib-2.0/schemas/` and then recompile the remaining schemas.
+
+Here are the steps to undo it:
+
+1. **Remove the Schema File:**
+
+   Delete the schema file you installed:
+
+   ```bash
+   sudo rm /usr/share/glib-2.0/schemas/org.gtk.exampleapp.gschema.xml
+   ```
+
+2. **Recompile the Remaining Schemas:**
+
+   After removing the schema, recompile the remaining schemas to update the compiled schema cache:
+
+   ```bash
+   sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+   ```
+
+This will ensure that your system no longer uses the removed schema, and the schema cache is up to date.
+
+## running
+
+1. **Ensure the schema file is in the correct directory**:
+
+   - Confirm that the file `org.gtk.exampleapp.gschema.xml` is located in the directory `/usr/share/glib-2.0/schemas/` or in a local directory where you're running the app.
+   - If not, copy it there with the following command:
+     ```bash
+     sudo cp org.gtk.exampleapp.gschema.xml /usr/share/glib-2.0/schemas/
+     ```
+
+2. **Recompile the schemas**:
+   After placing the schema file in the right location, recompile the schemas again:
+
+   ```bash
+   sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+   ```
+
+3. **Verify the installation**:
+
+   - To verify that the schema is correctly installed, you can list the schemas:
+     ```bash
+     gsettings list-schemas | grep org.gtk.exampleapp
+     ```
+   - If `org.gtk.exampleapp` shows up in the output, it means the schema has been installed correctly.
+
+4. **Run the application**:
+   After ensuring the schema is installed, try running the application again:
+   ```bash
+   ./app
+   ```
